@@ -1,13 +1,14 @@
 const clientId = "1586d326bf87450b94cc5d2dbec16f17"; // Replace with your client id
 const params = new URLSearchParams(window.location.search);
 const code = params.get("code");
+const playlistId = "37vVbInEzfnXJQjVuU7bAZ"
 
 if (!code) {
     redirectToAuthCodeFlow(clientId)
 } else {
     const accessToken = await getAccessToken(clientId, code);
-    const playlists = await fetchPlaylists(accessToken);
-    populatePlaylists(playlists);
+    const playlists = await fetchPlaylistByID(accessToken, playlistId);
+    populatePlaylistTracks(playlists);
 }
 
 export async function redirectToAuthCodeFlow(clientId: string) {
@@ -66,7 +67,7 @@ export async function getAccessToken(clientId: string, code: string): Promise<st
     const { access_token } = await result.json();
     return access_token;
 }
-
+/*
 async function fetchPlaylists(token: string): Promise<any> {
     const result = await fetch("https://api.spotify.com/v1/me/playlists", {
         method: "GET", headers: { Authorization: `Bearer ${token}` }
@@ -102,3 +103,50 @@ function populatePlaylists(playlist: any) {
 
     });
 }
+    */
+   async function fetchPlaylistByID( token: string, playlistId: string): Promise<PlaylistResponse>{
+    const response = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}`,
+        {   method: "GET",
+            headers: {
+            Authorization: `Bearer ${token}` }
+        });
+        return await response.json();
+    }
+   
+
+    function populatePlaylistTracks(playlist: any) {
+
+        const container = document.getElementById("playlistContainer");
+        if (!container) return;
+        container.innerHTML = "";
+
+
+        const header = document.createElement("div");
+        header.innerHTML = `
+        <h2>${playlist.name}</h2>
+        ${playlist.images[0] ? `<img src="${playlist.images[0].url}"
+        alt="playlist cover" width ="200">` :""} 
+        <p>${playlist.description || ""}</p> `;
+
+            container.appendChild(header);
+
+            const list =document.createElement("ol");
+            playlist.tracks.items.forEach((item: any) => {
+                const track = item.track;
+                if(!track) return;
+                
+                const li = document.createElement("li");
+                li.innerHTML = `
+                    ${track.album.images[0] ? `<br><img 
+                    src = "${track.album.images[0].url}" 
+                    alt = "Album cover" width="180">` : ""}<br>
+                    <strong>${track.name}</strong><br>
+                    ${track.artists.map((a: any)=> a.name).join(",")}<br>
+                    ${track.album.name}
+                    
+                `;
+                list.appendChild(li);
+            });
+            container.appendChild(list);
+
+    }
