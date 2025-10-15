@@ -3,26 +3,28 @@ const params = new URLSearchParams(window.location.search);
 const code = params.get("code");
 
 if (!code) {
-    redirectToAuthCodeFlow(clientId);
+    redirectToAuthCodeFlow(clientId)
 } else {
-    
     const accessToken = await getAccessToken(clientId, code);
-    const profile = await fetchProfile(accessToken);
-    console.log(profile);
-    populateUI(profile);
+    const playlists = await fetchPlaylists(accessToken);
+    populatePlaylists(playlists);
+    //const accessToken = await getAccessToken(clientId, code);
+    //const profile = await fetchProfile(accessToken);
+    //console.log(profile);
+    //populateUI(profile);
 }
 
 export async function redirectToAuthCodeFlow(clientId: string) {
-    const verifier = generateCodeVerifier(128);
-    const challenge = await generateCodeChallenge(verifier);
+    const verifier = generateCodeVerifier(128); // generates a randome string for this session
+    const challenge = await generateCodeChallenge(verifier); // a hashed version of the verifier, this uses SHA-256
 
-    localStorage.setItem("verifier", verifier);
+    localStorage.setItem("verifier", verifier); // stores the verifier for later use during the roke nexchange
 
-    const params = new URLSearchParams();
+    const params = new URLSearchParams(); // creates a new query string for the authorization URL
     params.append("client_id", clientId);
     params.append("response_type", "code");
-    params.append("redirect_uri", "http://127.0.0.1:5173/callback");
-    params.append("scope", "user-read-private user-read-email");
+    params.append("redirect_uri", "http://127.0.0.1:5173/callback"); // adds in the OAuth2 parameters 
+    params.append("scope", "user-read-private user-read-email playlist-read-private playlist-read-collaborative");
     params.append("code_challenge_method", "S256");
     params.append("code_challenge", challenge);
 
@@ -93,4 +95,40 @@ function populateUI(profile: UserProfile) {
     document.getElementById("url")!.innerText = profile.href;
     document.getElementById("url")!.setAttribute("href", profile.href);
     document.getElementById("imgUrl")!.innerText = profile.images[0]?.url ?? '(no profile image)';
+}
+
+async function fetchPlaylists(token: string): Promise<any> {
+    const result = await fetch("https://api.spotify.com/v1/me/playlists", {
+        method: "GET", headers: { Authorization: `Bearer ${token}` }
+    });
+    return await result.json();
+}
+
+function populatePlaylists(playlist: any) {
+    const playlistContainer = document.getElementById("playlistContainer");
+    playlistContainer!.innerHTML="";
+
+    playlist.items.forEach((playlist: any) => {
+        const div = document.createElement("div");
+        div.className = "playlist";
+
+        const name = document.createElement("h3");
+        name.innerText = playlist.name;
+        div.appendChild(name);
+
+        if ( playlist.images[0]){
+            const img = new Image(200, 200);
+            img.src = playlist.images[0].url;
+            div.appendChild(img);
+        }
+
+        const link = document.createElement("a");
+        link.href = playlist.external_urls.spotify;
+        link.innerText = "Open in Spotify";
+        link.target= "_blank";
+        div.appendChild(link);
+
+        playlistContainer!.appendChild(div);
+
+    });
 }

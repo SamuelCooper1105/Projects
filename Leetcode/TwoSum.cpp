@@ -1,21 +1,21 @@
 #include <vector>
-#include <unordered_set>
+#include <unordered_map>
+using namespace std;
 
 class SolutionIGuess{
     public:
-      bool hasDupe(const std::vector<int>& nums){
-        std::unordered_set <int> Sol;
+    vector<int> twoSum(vector<int>& nums, int target)
+{
+    unordered_map<int, int> map;
 
-        for ( int n: nums){
+    for( int i = 0; i< nums.size(); i++){
+        int diff = target - nums[i];
 
-            if(Sol.find(n) != Sol.end()){
-
-                return true;
-            }
-
-            Sol.insert(n);
-
-            }
-            return false;
+        if(map.find(diff) != map.end()){
+            return {map[diff], i};
         }
-    };
+        map[nums[i]] = i;
+    }
+    return {};
+}
+};
