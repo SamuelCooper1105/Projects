@@ -1,7 +1,12 @@
-fn ConDupe(nums: Vec<i32>)-> bool{
+fn ConDupe(nums: &Vec<i32>)-> bool{
 
     for i in 0..nums.len(){
-        println!("{}", nums[i]);
+        let j = i+1;
+        for j in 1..nums.len(){
+            if nums[i]==nums[j]{
+                return true
+            }
+        }
     }
 
     return false;
@@ -10,7 +15,11 @@ fn ConDupe(nums: Vec<i32>)-> bool{
 
 fn main(){
 
-    let v = vec![1,2,3,3];
+    let mut v = vec![1,2,3,3];
 
-    ConDupe(v);
+    ConDupe(&v);
+
+    let res = ConDupe(&v);
+
+    println!("{}", res);
 }
