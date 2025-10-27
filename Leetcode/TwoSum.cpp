@@ -1,21 +1,22 @@
-#include <vector>
-#include <unordered_map>
+#include<unordered_map>
+#include<vector>
+
 using namespace std;
 
-class SolutionIGuess{
-    public:
-    vector<int> twoSum(vector<int>& nums, int target)
-{
-    unordered_map<int, int> map;
+class Solution {
+public:
+    bool hasDuplicate(vector<int>& nums) {
+        unordered_map<int, int> dupes;
 
-    for( int i = 0; i< nums.size(); i++){
-        int diff = target - nums[i];
-
-        if(map.find(diff) != map.end()){
-            return {map[diff], i};
+        for (int i =0; i < nums.size(); i++){
+            dupes[nums[i]]++;
+            if(dupes[nums[i]]>1){
+                return true;
+            }
+            
         }
-        map[nums[i]] = i;
+
+        return false;
+        
     }
-    return {};
-}
 };
