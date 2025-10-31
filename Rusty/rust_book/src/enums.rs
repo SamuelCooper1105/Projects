@@ -1,14 +1,9 @@
-
-#[derive(Debug)]
-enum what_is_my_purpose{
-    butter(u32),
-    jam(String),
-
-}
-
 fn main(){
-    let y = what_is_my_purpose::jam(String::from("I like strawberry jam"));
+ 
+    let config_max= Some(3u8);
 
-    println!("{y:#?}");
+    if let Some(max)= config_max {
+        println!(" The maximum is configred to be{max}");
+    }
 
 }
