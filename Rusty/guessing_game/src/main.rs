@@ -1,4 +1,4 @@
-use std::io;
+use std::io; // allows for accepting user input, brings io into scope
 
 fn main(){
 
@@ -8,8 +8,13 @@ fn main(){
 
     let mut guess = String::new();
 
-    io::stdin().read_line(&mut guess).expect("Failed to read line");
+    io::stdin()
+    .read_line(&mut guess)//read_line is a method that takes user input and stores it in to guess, using a mutable reference
 
+    .expect("Failed to read line");
+    //read_line returns an enum named Return, .expect is a method defined on
+    //if result is an err value, then .expect() returns whatever argument it is given as an error message
+    
     println!("You guessed: {guess}");
 
 }
