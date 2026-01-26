@@ -1,6 +1,9 @@
 fn main(){
     let mut test = vec![437289, 8908, 264846, 346893270, 67, 69, 5748329 ];
     
+    for element in test{
+        println!("{}\n",element);}
+
     insert_sort(&mut test);
     
     for element in test {
