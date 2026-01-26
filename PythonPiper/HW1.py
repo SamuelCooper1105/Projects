@@ -114,14 +114,14 @@ def generate_orders(n=420):
 orders = generate_orders()
 len(orders), orders[0]
 
-print(orders[1])
+
 
 # Part 1 code, this code should print the first 3 orders.
 
 for i in range(3):
-    print(f"Details of order{i}:")
+    print(f"\nDetails of order {i}: ", end = " ")
     for key,value in orders[i].items():
-        print(f"|{key}: {value} \t")
+        print(f"|{key}: {value}", end = " ")
 
 count = 0
 #This code will count how many orders are from CA
@@ -181,6 +181,8 @@ def order_total(order):
     #return subtotal after discount. invalid discounts are returned as 0.
     
     dis = order['discount_pct']
+    if dis is None:
+        dis = order['discount_pct_clean']
 
     if dis > 50 or dis < 0:
         dis = 0
@@ -269,7 +271,7 @@ for i in orders:
     if i['discount_pct'] is None:
         print('error with discount pct')
     else:
-        i['discount_pct_clean'] = i.pop('discount_pct']
+        i['discount_pct_clean'] = i.pop('discount_pct')
     
     new = clean_rating(i['rating'])
 
@@ -283,14 +285,31 @@ for i in orders:
         clean_orders.append(i)
 
 print(f"Here is the amount of orders with bad or missing ratings {invalid_rating}\n")
-print(f"Here is the amount of orders with bad or missing dates {bad_dates} \n")
+print(f"Here is the amount of orders with bad or missing dates {bad_date} \n")
 
 ran = len(clean_orders)
 
+
+"""
 for i in range(ran):
     print(f"Details of order: {i} in clean_orders: \n")
     for key,value in clean_orders[i].items():
         print(f"{key}: {value}\n")
+"""
+#Create a list 'totals' with the order total for each order, use a cleaned discount for each of these.
+
+totals = []
+for i in orders:
+    if 'discount_pct_clean' in i:
+        total = order_total(i)
+        totals.append(total)
+    elif 'discount_pct' in i:
+        i = clean_discount_pct(i)
+        total = order_total(i)
+        totals.append(total)
+    else:
+        continue
+
 
 
 
