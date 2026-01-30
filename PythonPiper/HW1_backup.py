@@ -324,5 +324,108 @@ for i in orders:
         continue
 
 
+def mean(values):
+    sum = 0
+    count = len(values)
+    for i in values:
+        sum+=i
+    mean = sum/count
+    safe_float(mean)
+    return mean
+
+    
+def mean(values):
+    sum = 0
+    count = len(values)
+    for i in values:
+        sum+=i
+    mean = sum/count
+    safe_float(mean)
+    return mean
+
+    
+def median_pop(values):
+    values = sorted(values)
+    length = len(values)
+    
+    if length % 2 == 0:
+        b = length/2
+        
+        b = int(b)
+       
+        med_2= values[b]
+        med_1 = values[b-1]
+        a = (med_1+med_2)/2
+        a = float(a)
+        return a 
+    median=((length+1)/2)
+    a = values[median]
+    return a 
+
+
+def variance_pop(values):
+    data_sq = []
+    m = mean(values)
+
+    sum = 0
+
+    for i in values :
+        var = i -m
+        var = var * var
+        data_sq.append(var)
+
+    for i in data_sq:
+        sum +=i
+
+    length = len(data_sq)
+    pop_var = (sum/length)
+
+    return pop_var
+
+
+def std_pop(values):
+    var_pop = variance_pop(values)
+    std_pop=var_pop **(.5)
+
+    return std_pop
+
+def percentile(values, p):
+    """p in [0,100]. Use linear interpolation between closest ranks."""
+    values = sorted(values)
+    n = len(values)
+
+    position=(p/100) * (n-1)
+    index = int(position)
+    frac = position - index
+
+    if frac ==0:
+        return values[index]
+    else:
+        l = values[index]
+        h=values[index+1]
+        return l + frac * (h-l)
+
+def IQR(values):
+    Q3 = percentile(values,75)
+    Q1 = percentile(values, 25)
+    IQR = Q3 - Q1
+    return IQR
+
+
+print(f"Here is the mean of totals: {mean(totals):.2f}\n")
+print(f"Here is the median of totals: {median_pop(totals):.2f}\n")
+print(f"Here is the variance of the population of totals: {variance_pop(totals):.2f}\n")
+print(f"Here is the standard deviation of the population of totals: {std_pop(totals):.2f}\n")
+print(f"Here is the 25th, 50th, and 75th percentiles of totals: {percentile(totals, 25):.2f}, {percentile(totals, 50):.2f}, {percentile(totals, 75):.2f}\n")
+print(f"Here is the IQR of totals: {IQR(totals):.2f}\n")
+
+    
+# TODO: compute + print summary stats
+
+states = {}
+categories = {}
+
+print ( orders[1])
+
 
 
